@@ -68,20 +68,8 @@ Matching runs in the frontend for transparency; the backend independently valida
 
 This simple workspace API sends a full snapshot. SQL tables remain separate and normalized for key fields. Delivery payload stores supplementary outcome metadata.
 
-## Upload to GitHub
 
-Create an empty repository, extract this ZIP, then run inside the FoodBridge folder:
 
-```bash
-git init
-git add .
-git commit -m "Add FoodBridge frontend backend and database"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/foodbridge-redistribution.git
-git push -u origin main
-```
-
-Replace the URL with your repository URL. The included `.gitignore` excludes SQLite runtime data and Python cache files. No credentials are included.
 
 ## Development limits
 
