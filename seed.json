@@ -1,0 +1,99 @@
+{
+  "food": [
+    {
+      "id": "f1",
+      "name": "Vegetable rice & dal",
+      "org": "Seaside Kitchen",
+      "qty": 80,
+      "type": "Vegetarian",
+      "x": 2,
+      "y": 3,
+      "cold": false,
+      "expiresInHours": 2
+    },
+    {
+      "id": "f2",
+      "name": "Fresh fruit & vegetables",
+      "org": "Green Basket Market",
+      "qty": 120,
+      "type": "Produce",
+      "x": 5,
+      "y": 1,
+      "cold": false,
+      "expiresInHours": 8
+    },
+    {
+      "id": "f3",
+      "name": "Bread & baked goods",
+      "org": "Baker Street",
+      "qty": 45,
+      "type": "Bakery",
+      "x": 1,
+      "y": 1,
+      "cold": false,
+      "expiresInHours": 4
+    },
+    {
+      "id": "f4",
+      "name": "Chilled prepared meals",
+      "org": "Harbour Hotel",
+      "qty": 60,
+      "type": "Vegetarian",
+      "x": 7,
+      "y": 4,
+      "cold": true,
+      "expiresInHours": 3
+    }
+  ],
+  "requests": [
+    {
+      "id": "r1",
+      "name": "Anbu Community Kitchen",
+      "qty": 100,
+      "type": "Vegetarian",
+      "priority": 3,
+      "x": 3,
+      "y": 3,
+      "cold": true
+    },
+    {
+      "id": "r2",
+      "name": "Hope Shelter",
+      "qty": 60,
+      "type": "Any",
+      "priority": 2,
+      "x": 1,
+      "y": 2,
+      "cold": false
+    },
+    {
+      "id": "r3",
+      "name": "Community Food Bank",
+      "qty": 120,
+      "type": "Produce",
+      "priority": 1,
+      "x": 6,
+      "y": 1,
+      "cold": true
+    },
+    {
+      "id": "r4",
+      "name": "Student Support Centre",
+      "qty": 50,
+      "type": "Any",
+      "priority": 2,
+      "x": 6,
+      "y": 5,
+      "cold": true
+    }
+  ],
+  "jobs": [],
+  "settings": {
+    "radius": 10,
+    "capacity": 80,
+    "trips": 6,
+    "speed": 25,
+    "cold": true,
+    "priority": 50
+  }
+}
