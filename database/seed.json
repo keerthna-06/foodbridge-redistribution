@@ -2,10 +2,10 @@
   "food": [
     {
       "id": "f1",
-      "name": "Vegetable rice & dal",
-      "org": "Seaside Kitchen",
+      "name": "Chicken Biriyani",
+      "org": "Haribhavanam",
       "qty": 80,
-      "type": "Vegetarian",
+      "type": "Non-Vegetarian",
       "x": 2,
       "y": 3,
       "cold": false,
@@ -13,8 +13,8 @@
     },
     {
       "id": "f2",
-      "name": "Fresh fruit & vegetables",
-      "org": "Green Basket Market",
+      "name": "Fruits and vegetables",
+      "org": "Pazhamudhir",
       "qty": 120,
       "type": "Produce",
       "x": 5,
@@ -25,7 +25,7 @@
     {
       "id": "f3",
       "name": "Bread & baked goods",
-      "org": "Baker Street",
+      "org": "Caramel Bakes",
       "qty": 45,
       "type": "Bakery",
       "x": 1,
@@ -36,7 +36,7 @@
     {
       "id": "f4",
       "name": "Chilled prepared meals",
-      "org": "Harbour Hotel",
+      "org": "Arya bhavan",
       "qty": 60,
       "type": "Vegetarian",
       "x": 7,
