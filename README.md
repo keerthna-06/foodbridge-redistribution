@@ -1,48 +1,24 @@
-# FoodBridge — Smart Food Waste Redistribution
+FoodBridge: Smart Food Waste Redistribution
 
-A working development application for matching surplus food with recipient demand. Frontend, backend, and database code are separate. No third-party dependencies are required.
+**Live demo:** https://foodbridge-redistribution.onrender.com
+*(Free hosting sleeps when idle, so the first load can take up to a minute.)*
 
-## Folder structure
+FoodBridge matches surplus food from hotels, kitchens and bakeries with the shelters and community kitchens that need it, and decides who gets what before the food expires.
 
-- `frontend/index.html`: responsive interface and styles.
-- `frontend/app.js`: UI, matching, baseline comparison, API synchronization, and CSV export.
-- `backend/server.py`: Python HTTP API, validation, static file serving, and transactional SQLite persistence.
-- `database/schema.sql`: relational schema for food, recipients, deliveries, settings, and workspace revision.
-- `database/seed.json`: sample data with expiry times relative to startup.
-- `tests/test_backend.py`: persistence and allocation constraint tests.
+## The problem
+Good food is thrown away every day while people nearby go hungry. Matching donors with recipients is mostly manual (calls, WhatsApp groups), so food often expires before it reaches anyone.
 
-## Run locally
+## What it does
+- Add or edit surplus food and recipient requests (category, portions, expiry, chilled storage)
+- Configurable vehicle capacity, distance radius, speed, trip budget and priority weight
+- Smart matching with partial allocations, splitting supply across recipients
+- Reserve, pick up, deliver or cancel allocations (cancelling releases the quantity)
+- Compare smart matching against a nearest-first baseline on the same data
+- Track delivered portions, remaining demand and active deliveries, with CSV export
+- Shared records with revision checks, so two people can't overwrite each other
 
-Install Python 3.10 or newer. From the FoodBridge folder:
-
-```bash
-python backend/server.py
-```
-
-Open **http://localhost:8000**. On Windows, use `py` instead of `python` if necessary. Do not open the HTML file directly: it requires the API.
-
-SQLite is initialized automatically at `database/foodbridge.sqlite3`. No database installation is needed. To change the location, set `FOODBRIDGE_DB`; use `PORT` to change port 8000. The server listens on localhost for development.
-
-```bash
-python -m unittest discover -s tests -v
-```
-
-## Features
-
-- Add or edit surplus food and recipient requests.
-- Food category, quantities in a common portion unit, expiry, and chilled storage.
-- Configurable vehicle capacity, distance radius, speed, trip budget, and recipient priority weight.
-- Partial allocations and splitting supply across recipients.
-- Reserve, pick up, deliver, or cancel allocations; cancelled reservations release quantities.
-- Confirmed delivered portions, remaining demand, active deliveries, and CSV outcome export.
-- Simulate smart matching and a nearest-first baseline on the same snapshot.
-- Shared database records with optimistic revision checks to prevent concurrent overwrites. A conflicting or rejected save reloads server state and shows an error; rejected local edits are discarded.
-
-## Matching method
-
-Coordinates represent kilometres from a shared origin. Distance is Euclidean, not live road distance. Estimated arrival time is 15 minutes handling plus distance / speed. A candidate must arrive before expiry, satisfy category and cold-chain constraints, fit remaining supply/demand, and stay inside the configured radius.
-
-Smart matching greedily selects the highest-scoring feasible candidate:
+## How matching works
+Coordinates are kilometres from a shared origin. A candidate must arrive before expiry, satisfy category and cold-chain rules, fit remaining supply and demand, and be inside the radius. The highest-scoring feasible candidate is picked greedily:
 
 ```
 score = 40 / (remaining_hours + 0.5)
@@ -51,26 +27,53 @@ score = 40 / (remaining_hours + 0.5)
       - 2 * distance_km
 ```
 
-Each allocation is bounded by vehicle capacity. Repeat until no feasible candidate remains or the concurrent trip budget is exhausted. The nearest-first baseline instead selects the shortest feasible route, using the same constraints. This is a heuristic, not a globally optimal solver. Neither strategy is guaranteed to win on every objective.
+Each allocation is limited by vehicle capacity, and the process repeats until nothing feasible remains or the trip budget runs out. The baseline instead picks the shortest feasible route. This is a heuristic, not a globally optimal solver, and neither strategy wins on every metric.
 
-Comparison metrics include allocated portions, urgent portions allocated (under three hours), one-way route distance, trips, demand fulfilment, and unallocated food. Unallocated food is not automatically counted as waste. Simulated metrics are separate from delivered outcomes.
+## Project structure
+```
+frontend/   index.html (UI and styles), app.js (UI, matching, API sync, CSV export)
+backend/    server.py (HTTP API, validation, SQLite persistence), test_backend.py
+database/   schema.sql, seed.json (demo data with expiry times relative to startup)
+```
 
-Matching runs in the frontend for transparency; the backend independently validates newly reserved allocations and quantity conservation in a database transaction. Recorded late deliveries are flagged. No food-safety approval is inferred from expiry matching.
+## Tech stack
+HTML, CSS and JavaScript (no framework) · Python standard library · SQLite · hosted on Render. No third-party dependencies.
+
+## Run locally
+Requires Python 3.10+.
+
+```bash
+git clone https://github.com/keerthna-06/foodbridge-redistribution.git
+cd foodbridge-redistribution
+python3 backend/server.py
+```
+
+Open http://localhost:8000. Don't open the HTML file directly, because it needs the API. Set `PORT` to change the port and `FOODBRIDGE_DB` to change the database location.
 
 ## API
-
 | Method | Endpoint | Purpose |
 |---|---|---|
 | GET | `/api/health` | Health check |
 | GET | `/api/state` | Workspace records and current revision |
-| PUT | `/api/state` | Atomically save `{ "revision": 0, "state": {...} }`; rejects invalid allocations and stale revisions |
-| POST | `/api/reset` | Replace records with fresh demonstration data |
+| PUT | `/api/state` | Save a snapshot; rejects invalid allocations and stale revisions |
+| POST | `/api/reset` | Replace records with fresh demo data |
 
-This simple workspace API sends a full snapshot. SQL tables remain separate and normalized for key fields. Delivery payload stores supplementary outcome metadata.
+## Demo walkthrough
+1. Settings → **Reset demo** (loads fresh expiry times)
+2. **Overview**: available food and recipient demand
+3. **Surplus food**: add a donation that expires soon
+4. **Smart matching**: run it and see who receives what
+5. **Redistributions**: reserve and track the allocation
+6. **Impact & baseline**: compare against the nearest-first baseline
 
+## Limitations
+This is a development prototype, not a production service. There is no authentication, user roles, messaging or live map integration, distances are straight-line and not road routes, and no food-safety approval is inferred from expiry matching. The reset endpoint is open for demo purposes. On free hosting the database may reset when the server restarts.
 
+**Next steps:** login for donors and NGOs, real road distances, SMS or WhatsApp alerts, and PostgreSQL for scale.
 
+## Team Plain Maggie
+- Geethika R
+- Keerthna M
+- Darshan S
 
-## Development limits
-
-This is a runnable educational/development project, not a production service. It has no authentication, user roles, organization isolation, messaging, live map integration, or safety verification. The local API includes a demo reset endpoint. Add authentication/authorization, controlled reset access, deployment-grade request handling, road-route estimates, transport scheduling, and food-safety workflows before real-world deployment. The earlier hosted static demo remains unchanged; this package is the separate full-stack version.
+Built for Commitcon, 2026.
